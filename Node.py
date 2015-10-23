@@ -82,19 +82,23 @@ tree = {
         6: [7, 8],
             7: [],
             8: [],
-        9: []
+        9: [10],
+            10: []
 }
 
 def aggs(ps, tree):
     results = []
     for p in ps:
         results.append(merge_nodes(p, tree))
-        print results
     return results
 
 print "Original Tree"
 pprint(tree, width=25)
 
+print(len(possible_aggs(walk(tree))))
+
+
+print "Aggregated Tress"
 for t in aggs(possible_aggs(walk(tree)), tree):
     pprint(t, width = 25)
 #
