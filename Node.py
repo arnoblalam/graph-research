@@ -95,7 +95,9 @@ def aggs(ps, tree):
 print "Original Tree"
 pprint(tree, width=25)
 
-pprint(walk(tree))
-
-print "Merged tree"
-pprint(merge_nodes((1,2), tree), width=30)
+for t in aggs(possible_aggs(walk(tree)), tree):
+    pprint(t, width = 25)
+#
+#
+#print "Merged tree"
+#pprint(merge_nodes((1,2), tree), width=30)
