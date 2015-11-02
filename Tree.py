@@ -10,18 +10,6 @@ from copy import copy
 from pprint import pprint
 
 
-def n_slices(n, list_):
-    """Creates slices out of a list"""
-    for i in xrange(len(list_) + 1 - n):
-        yield list_[i:i+n]
-
-def isSublist(list_, sub_list):
-    """Checks if sublist is a sublist of list"""
-    for slice_ in n_slices(len(sub_list), list_):
-        if slice_ == sub_list:
-            return True
-    return False
-
 def permute(xs):
     """Given a list of xs, returns a list of the permuations of xs
     permute :: [a] --> [(a)]
