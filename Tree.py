@@ -6,8 +6,9 @@ __copyright__ = 'Copyright 2015, Arnob L. Alam'
 __license__ = 'GPL v3'
 
 from itertools import permutations
-from copy import copy
+from copy import deepcopy
 from pprint import pprint
+from time import sleep
 
 
 def permute(xs):
@@ -46,7 +47,7 @@ def walk(tree):
     results = []
     for parent, children in tree.iteritems():
         perms = permute(children)
-        temp = copy(perms)
+        temp = deepcopy(perms)
         # Add the parent to the perms as well
         for perm in temp:
             perms.append(add_to_head_of_perm(parent, perm))
@@ -58,12 +59,12 @@ def merge_nodes(node_ids, tree):
     """Merges nodes in a tree together
     merge_nodes :: (Dict b) => (a, a) -> b -> b
     """
-    # Don't merge nodes if they are already merged
-    if node_ids in tree or tuple(reversed(node_ids)) in tree:
-        return tree
     # Copy the tree so we keep the original intact
-    temp = copy(tree)
-    # Get all the children of each node (except if that child is the one being merged)
+    temp = deepcopy(tree)
+    # Don't merge nodes if they are already merged
+    if node_ids in temp or tuple(reversed(node_ids)) in temp:
+        return temp
+    # Get all the children of each node we need to merge (except if that child is the other node)
     children_1 = filter(lambda x: x != node_ids[1], temp[node_ids[0]])
     children_2 = filter(lambda x: x != node_ids[0], temp[node_ids[1]])
     merged_children = children_1 + children_2
@@ -72,19 +73,24 @@ def merge_nodes(node_ids, tree):
     temp.pop(node_ids[1], None)
     # Add a new node
     temp[node_ids] = merged_children
-    # Replace references to the old node in the parent with references to the new node
-    #parent = find_parent(node_ids[0], temp)
-    #if parent:
-    #    try:
-    #        pos = temp[parent].index(node_ids[0])
-    #        temp[parent].remove(node_ids[0])
-    #        temp[parent].remove(node_ids[1])
-    #        temp[parent].insert(pos, node_ids)
-    #    except ValueError:
-    #        print temp[parent]
-    #        print node_ids
-    #        raise
+    
+    # Update references to the old node with references to the new node
+    for k, v in temp.iteritems():
+        if node_ids[0] in v:
+            idx = v.index(node_ids[0])
+            v.remove(node_ids[0])
+            v.insert(idx, node_ids)
+        if node_ids[1] in v:
+            idx = v.index(node_ids[1])
+            v.remove(node_ids[1])
+            v.insert(idx, node_ids)
+        temp[k] = f7(v)
     return temp
+    
+def f7(seq):
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in seq if not (x in seen or seen_add(x))]
     
 def find_parent(node_id, tree):
     for k, v in tree.iteritems():
@@ -108,3 +114,16 @@ def aggs(tree):
     for p in ps:
         results.append(merge_nodes(p, tree))
     return results
+    
+def agg_to(tree, desired_level, existing =[]):
+    """agg_to :: Tree a -> Int -> [Tree a]
+    """
+    if desired_level <= 0:
+        raise ValueError("Must be aggrgated to a psotive length")
+    if len(tree) <= desired_level:
+        return existing + [tree]
+    else:
+        a = aggs(tree)
+        existing = existing + a
+        for t in a:
+            return agg_to(t, desired_level, existing) 
