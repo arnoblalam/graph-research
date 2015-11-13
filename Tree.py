@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import division
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -8,7 +10,7 @@ __license__ = 'GPL v3'
 from itertools import permutations
 from copy import deepcopy
 from pprint import pprint
-from time import sleep
+from math import log
 
 
 def permute(xs):
@@ -112,18 +114,107 @@ def aggs(tree):
     ps = possible_aggs(walk(tree))
     results = []
     for p in ps:
-        results.append(merge_nodes(p, tree))
+        e = merge_nodes(p, tree)
+        if e not in results:
+            results.append(e)
     return results
     
-def agg_to(tree, desired_level, existing =[]):
+def agg_to(tree, desired_level):
     """agg_to :: Tree a -> Int -> [Tree a]
     """
-    if desired_level <= 0:
-        raise ValueError("Must be aggrgated to a psotive length")
-    if len(tree) <= desired_level:
-        return existing + [tree]
+    current_level = len(tree)
+    if desired_level >= current_level:
+        return [tree]
+    elif desired_level < 2:
+        raise Exception("Resulting tree must have at least two nodes")
     else:
-        a = aggs(tree)
-        existing = existing + a
-        for t in a:
-            return agg_to(t, desired_level, existing) 
+        n = len(tree) - desired_level
+        return filter(lambda x: len(x) == desired_level, reduce_n_times(tree, n))
+    
+    
+    
+#def reduce_once(tree):
+#    return aggs(tree)
+#    
+#def reduce_twice(tree):
+#    trees = reduce_once(tree)
+#    results = []
+#    for tree in trees:
+#        results = results + aggs(tree)
+#    return results
+#    
+#def reduce_thrice(tree):
+#    trees = reduce_twice(tree)
+#    results = []
+#    for tree in trees:
+#        results = results + aggs(tree)
+#    return results
+#    
+#def reduce_four_times(tree):
+#    trees = reduce_thrice(tree)
+#    results = []
+#    for tree in trees:
+#        results = results + aggs(tree)
+#    return results
+    
+def reduce_n_times(tree, n):
+    if n==1:
+        return aggs(tree)
+    if n>1:
+        results = []
+        trees = reduce_n_times(tree, n-1)
+        for tree in trees:
+            results = results + aggs(tree)
+        return results
+            
+def apply_aggregation(t, node_data, f=lambda x, y: x+y):
+    try:
+        result = dict()
+        for k, v in t.iteritems():
+            if type(k) is not tuple:
+                result[k] = node_data[k]
+            else:
+                result[k] = apply_tuple(k, node_data, f)
+        return result
+    except:
+        print(t)
+        raise
+    
+def apply_tuple(t, n, f):
+    if type(t[0]) is not tuple and type(t[1]) is not tuple:
+        return f(n[t[0]], n[t[1]])
+    elif type(t[0]) is tuple and type(t[1]) is tuple:
+        return f(apply_tuple(t[0], n, f), apply_tuple(t[1], n, f))
+    elif type(t[0]) is tuple:
+        return f(apply_tuple(t[0], n, f), n[t[1]])
+    elif type(t[1]) is tuple:
+        return f(n[t[0]], apply_tuple(t[1], n, f))
+        
+def calculate_H(n):
+    total = sum(n.itervalues())
+    weights =  [wi/total for wi in n.itervalues()]
+    return -sum([wi*log(wi) for wi in weights])
+
+def calculate_S(n):
+    return calculate_H(n)/log(len(n))
+    
+def calculate_P(n):
+    W = sum(n.itervalues())
+    ws =  n.itervalues()
+    return -sum([(wi/W)*log(wi/W, 2) for wi in ws])
+    
+def aggregate(tree, node_weights, desired_level):
+    reduced_trees = agg_to(tree, desired_level)
+    agg_weights = [apply_aggregation(t, node_weights) for t in reduced_trees]
+    H = [calculate_H(x) for x in agg_weights]
+    S = [calculate_S(x) for x in agg_weights]
+    H_max = max(H)
+    S_max = max(S)
+    H_original=calculate_H(node_weights)
+    S_original=calculate_S(node_weights)
+    print "The orignal tree had an entropy of {}".format(H_original)
+    print "The reduced tree with the highest entropy had an entropy of {}".format(H_max)
+    print "Here is a print out of the new new tree"
+    pprint(reduced_trees[H.index(max(H))],width=25)
+    print "And here are the associated weights for each node"
+    pprint(agg_weights[H.index(max(H))],width=25)
