@@ -3,9 +3,9 @@ from pprint import pprint
 
 
 test_tree = {
-    1: [2],
-    2: [3],
-    3: [4],
+    1: [2, 3, 4],
+    2: [],
+    3: [],
     4: []
     }
     
@@ -21,7 +21,4 @@ reduced_trees = Tree.agg_to(test_tree, 2)
 agg_weights = [Tree.apply_aggregation(t, node_weights) for t in reduced_trees]
 H = [Tree.calculate_H(x) for x in agg_weights]
 S = [Tree.calculate_S(x) for x in agg_weights]
-print max(H)
-print max(S)
-
-print H.index(max(H))
+Tree.aggregate(test_tree,node_weights, 2, keep_intermediate=True, order_matters=False)

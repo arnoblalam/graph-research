@@ -7,7 +7,7 @@ __author__ = 'Arnob L. Alam'
 __copyright__ = 'Copyright 2015, Arnob L. Alam'
 __license__ = 'GPL v3'
 
-from itertools import permutations
+from itertools import permutations, combinations
 from copy import deepcopy
 from pprint import pprint
 from math import log
@@ -18,7 +18,14 @@ def permute(xs):
     permute :: [a] --> [(a)]
     """
     return list(permutations(xs))
-
+    
+def combine(xs):
+    """Given a list of xs, returns a list of the permuations of xs
+    permute :: [a] --> [(a)]
+    """
+    return list(combine(xs))
+    
+    
 def add_to_head_of_perm(y, ys):
     """Given a list, adds item to head of list.
     add_to_head_of_perm :: a --> [a] --> [a]
@@ -42,13 +49,16 @@ def pairwise(ys):
         results.append(temp)
     return results
 
-def walk(tree):
+def walk(tree, order_matters=False):
     """Given a tree, generates all possible aggregations
     walk :: (Dict a) => a -> [a_]
     """
     results = []
     for parent, children in tree.iteritems():
-        perms = permute(children)
+        if order_matters == True:
+            perms = combine(children)
+        else:
+            perms = permute(children)
         temp = deepcopy(perms)
         # Add the parent to the perms as well
         for perm in temp:
@@ -109,9 +119,9 @@ def possible_aggs(merge_list):
             [results.append(z) for z in y if type(z) is tuple]
     return results
 
-def aggs(tree):
+def aggs(tree, order_matters=False):
     """Given a list of possible aggregations, generates possible trees"""
-    ps = possible_aggs(walk(tree))
+    ps = possible_aggs(walk(tree, order_matters))
     results = []
     for p in ps:
         e = merge_nodes(p, tree)
@@ -119,7 +129,7 @@ def aggs(tree):
             results.append(e)
     return results
     
-def agg_to(tree, desired_level):
+def agg_to(tree, desired_level, keep_intermediate=False, order_matters=False):
     """agg_to :: Tree a -> Int -> [Tree a]
     """
     current_level = len(tree)
@@ -129,42 +139,20 @@ def agg_to(tree, desired_level):
         raise Exception("Resulting tree must have at least two nodes")
     else:
         n = len(tree) - desired_level
-        return filter(lambda x: len(x) == desired_level, reduce_n_times(tree, n))
-    
-    
-    
-#def reduce_once(tree):
-#    return aggs(tree)
-#    
-#def reduce_twice(tree):
-#    trees = reduce_once(tree)
-#    results = []
-#    for tree in trees:
-#        results = results + aggs(tree)
-#    return results
-#    
-#def reduce_thrice(tree):
-#    trees = reduce_twice(tree)
-#    results = []
-#    for tree in trees:
-#        results = results + aggs(tree)
-#    return results
-#    
-#def reduce_four_times(tree):
-#    trees = reduce_thrice(tree)
-#    results = []
-#    for tree in trees:
-#        results = results + aggs(tree)
-#    return results
-    
-def reduce_n_times(tree, n):
+        if keep_intermediate == True:
+            return reduce_n_times(tree, n, order_matters)
+        else:
+            return filter(lambda x: len(x) == desired_level, reduce_n_times(tree, n, order_matters))
+        
+        
+def reduce_n_times(tree, n, order_matters=False):
     if n==1:
-        return aggs(tree)
+        return aggs(tree, order_matters)
     if n>1:
         results = []
         trees = reduce_n_times(tree, n-1)
         for tree in trees:
-            results = results + aggs(tree)
+            results = results + aggs(tree, order_matters)
         return results
             
 def apply_aggregation(t, node_data, f=lambda x, y: x+y):
@@ -203,18 +191,32 @@ def calculate_P(n):
     ws =  n.itervalues()
     return -sum([(wi/W)*log(wi/W, 2) for wi in ws])
     
-def aggregate(tree, node_weights, desired_level):
-    reduced_trees = agg_to(tree, desired_level)
+def aggregate(tree, node_weights, desired_level, keep_intermediate=False, order_matters=False):
+    reduced_trees = agg_to(tree, desired_level, keep_intermediate)
     agg_weights = [apply_aggregation(t, node_weights) for t in reduced_trees]
     H = [calculate_H(x) for x in agg_weights]
     S = [calculate_S(x) for x in agg_weights]
+    sorted_H = [i[0] for i in sorted(enumerate(H), key=lambda x:x[1], reverse=True)]
+    sorted_S = [i[0] for i in sorted(enumerate(S), key=lambda x:x[1], reverse=True)]
     H_max = max(H)
     S_max = max(S)
     H_original=calculate_H(node_weights)
     S_original=calculate_S(node_weights)
+    
     print "The orignal tree had an entropy of {}".format(H_original)
+    
     print "The reduced tree with the highest entropy had an entropy of {}".format(H_max)
-    print "Here is a print out of the new new tree"
+    print "Here is a print out of that tree"
     pprint(reduced_trees[H.index(max(H))],width=25)
     print "And here are the associated weights for each node"
     pprint(agg_weights[H.index(max(H))],width=25)
+    
+    print "The reduced tree with the highest relative entropy had an entropy of {}".format(S_max)
+    pprint(reduced_trees[S.index(max(S))],width=25)
+    print "And here are the associated weights for each node"
+    pprint(agg_weights[S.index(max(S))],width=25)
+        
+    print "Here are the IDs of the top 10 trees by Maximum Entropy"
+    pprint(sorted_H[0:10])
+    print "Here are the IDs of the top 10 trees by Reative Maximum Entropy"
+    pprint(sorted_S[0:10])
