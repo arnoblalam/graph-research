@@ -11,6 +11,7 @@ from itertools import permutations, combinations
 from copy import deepcopy
 from pprint import pprint
 from math import log
+from csv import DictWriter
 
 
 def permute(xs):
