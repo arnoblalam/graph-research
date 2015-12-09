@@ -164,6 +164,7 @@ def reduce_n_times(tree, n, weights):
         trees = reduce_n_times(tree, n-1, weights)
         for tree in trees:
             results = results + aggs(tree, weights)
+        #print results
         return results
             
 def apply_aggregation(t, node_data, f=lambda x, y: x+y):
@@ -213,7 +214,7 @@ def write_tree_ids(entropy_list, fname):
             writer.writerow(w)
     
 def aggregate(tree, node_weights, desired_level, keep_intermediate=False):
-    reduced_trees = agg_to(tree, desired_level, node_weights, keep_intermediate)
+    reduced_trees = agg_to(tree, node_weights, desired_level, keep_intermediate)
     agg_weights = [apply_aggregation(t, node_weights) for t in reduced_trees]
     H = [calculate_H(x) for x in agg_weights]
     S = [calculate_S(x) for x in agg_weights]
