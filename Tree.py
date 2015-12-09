@@ -8,10 +8,14 @@ __copyright__ = 'Copyright 2015, Arnob L. Alam'
 __license__ = 'GPL v3'
 
 from itertools import permutations, combinations
-from copy import deepcopy
+#from copy import deepcopy, copy
+import cPickle
 from pprint import pprint
 from math import log
 from csv import DictWriter
+
+def deepcopy(obj):
+    return cPickle.loads(cPickle.dumps(obj, -1))
 
 
 def permute(xs):
@@ -20,11 +24,11 @@ def permute(xs):
     """
     return list(permutations(xs))
     
-def combine(xs):
-    """Given a list of xs, returns a list of the permuations of xs
-    permute :: [a] --> [(a)]
-    """
-    return list(combine(xs))
+#def combine(xs):
+#    """Given a list of xs, returns a list of the permuations of xs
+#    permute :: [a] --> [(a)]
+#    """
+#    return list(combine(xs))
     
     
 def add_to_head_of_perm(y, ys):
@@ -56,10 +60,7 @@ def walk(tree, order_matters=False):
     """
     results = []
     for parent, children in tree.iteritems():
-        if order_matters == True:
-            perms = combine(children)
-        else:
-            perms = permute(children)
+        perms = permute(children)
         temp = deepcopy(perms)
         # Add the parent to the perms as well
         for perm in temp:
@@ -97,27 +98,26 @@ def merge_nodes(node_ids, tree):
             idx = v.index(node_ids[1])
             v.remove(node_ids[1])
             v.insert(idx, node_ids)
-        temp[k] = f7(v)
+        temp[k] = dedupe(v)
     return temp
     
-def f7(seq):
+def dedupe(seq):
     seen = set()
     seen_add = seen.add
     return [ x for x in seq if not (x in seen or seen_add(x))]
     
-def find_parent(node_id, tree):
-    for k, v in tree.iteritems():
-        if node_id in v:
-            return k
-        else:
-            continue
 
 def possible_aggs(merge_list):
     """Generates possible aggregations of a tree"""
     results = []
     for x in merge_list:
         for y in x:
-            [results.append(z) for z in y if type(z) is tuple]
+            for k, z in enumerate(y):
+                if type(z) is tuple:
+                    temp = y
+                    temp[k] = tuple([z[1], z[0]])
+                    if temp not in y:
+                        results.append(z)
     return results
 
 def aggs(tree, order_matters=False):
@@ -143,15 +143,22 @@ def agg_to(tree, desired_level, keep_intermediate=False, order_matters=False):
         if keep_intermediate == True:
             return reduce_n_times(tree, n, order_matters)
         else:
-            return filter(lambda x: len(x) == desired_level, reduce_n_times(tree, n, order_matters))
+            return filter(lambda x: len(x) == desired_level, 
+                            reduce_n_times(tree, n, order_matters))
         
         
-def reduce_n_times(tree, n, order_matters=False):
+def reduce_n_times(tree, n, order_matters=False, shortcut=False):
+    """Reduce a tree n times. E.g. if you have a 4 node tree and you reduce it
+    once, you get back all the 3 node trees.  If you reduce it twice, you get
+    back all the 2 node trees"""
     if n==1:
         return aggs(tree, order_matters)
     if n>1:
         results = []
         trees = reduce_n_times(tree, n-1)
+        if shortcut == True:
+            pass
+            # Code for filtering out bad trees 
         for tree in trees:
             results = results + aggs(tree, order_matters)
         return results
@@ -192,6 +199,15 @@ def calculate_P(n):
     ws =  n.itervalues()
     return -sum([(wi/W)*log(wi/W, 2) for wi in ws])
     
+def write_tree_ids(entropy_list, fname):
+    with open(fname, 'w') as csvfile:
+        fieldnames = ["tree index", "entropy"]
+        writer = DictWriter(csvfile, fieldnames=fieldnames, lineterminator='\n')
+        writer.writeheader()
+        for k, v in enumerate(entropy_list):
+            w = {"tree index": k, "entropy": v}
+            writer.writerow(w)
+    
 def aggregate(tree, node_weights, desired_level, keep_intermediate=False, order_matters=False):
     reduced_trees = agg_to(tree, desired_level, keep_intermediate)
     agg_weights = [apply_aggregation(t, node_weights) for t in reduced_trees]
@@ -199,6 +215,8 @@ def aggregate(tree, node_weights, desired_level, keep_intermediate=False, order_
     S = [calculate_S(x) for x in agg_weights]
     sorted_H = [i[0] for i in sorted(enumerate(H), key=lambda x:x[1], reverse=True)]
     sorted_S = [i[0] for i in sorted(enumerate(S), key=lambda x:x[1], reverse=True)]
+    write_tree_ids(H, "absolute_entropies.csv")
+    write_tree_ids(S, "relative_entropies.csv")
     H_max = max(H)
     S_max = max(S)
     H_original=calculate_H(node_weights)
