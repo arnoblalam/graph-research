@@ -23,13 +23,7 @@ def permute(xs):
     permute :: [a] --> [(a)]
     """
     return list(permutations(xs))
-    
-#def combine(xs):
-#    """Given a list of xs, returns a list of the permuations of xs
-#    permute :: [a] --> [(a)]
-#    """
-#    return list(combine(xs))
-    
+        
     
 def add_to_head_of_perm(y, ys):
     """Given a list, adds item to head of list.
@@ -54,7 +48,7 @@ def pairwise(ys):
         results.append(temp)
     return results
 
-def walk(tree, order_matters=False):
+def walk(tree, order_matters=False, restricted_nodes = []):
     """Given a tree, generates all possible aggregations
     walk :: (Dict a) => a -> [a_]
     """
@@ -66,7 +60,9 @@ def walk(tree, order_matters=False):
         for perm in temp:
             perms.append(add_to_head_of_perm(parent, perm))
         for perm in perms:
-            results.append(pairwise(perm))
+            if (len(perm) == 2 and perm[0] not in restricted_nodes and perm[1] not in restricted_nodes) or len(perm) != 2:
+                r = pairwise(perm)
+                results.append(r)
     return results
 
 def merge_nodes(node_ids, tree):
@@ -118,7 +114,8 @@ def possible_aggs(merge_list):
                     temp[k] = tuple([z[1], z[0]])
                     if temp not in y:
                         results.append(z)
-    return results
+    results_ = filter(lambda x: x[::-1] not in results, results)
+    return results_
 
 def aggs(tree, order_matters=False):
     """Given a list of possible aggregations, generates possible trees"""
@@ -156,14 +153,12 @@ def reduce_n_times(tree, n, order_matters=False, shortcut=False):
     if n>1:
         results = []
         trees = reduce_n_times(tree, n-1)
-        if shortcut == True:
-            pass
-            # Code for filtering out bad trees 
         for tree in trees:
             results = results + aggs(tree, order_matters)
         return results
             
 def apply_aggregation(t, node_data, f=lambda x, y: x+y):
+    """Create the new tree weights by applying the """
     try:
         result = dict()
         for k, v in t.iteritems():
