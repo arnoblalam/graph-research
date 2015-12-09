@@ -57,7 +57,7 @@ artificial_tree_weights ={
 }
 
 #reduced_artificial_trees = Tree.agg_to(artificial_tree, 28, keep_intermediate=False, order_matters=False)
-Tree.aggregate(artificial_tree, artificial_tree_weights, 22, keep_intermediate=True)
+Tree.aggregate(artificial_tree, artificial_tree_weights, 21, keep_intermediate=True)
 #
 #agg_weights = [Tree.apply_aggregation(t, artificial_tree_weights) for t in reduced_artificial_trees]
 #H = [Tree.calculate_H(x) for x in agg_weights]

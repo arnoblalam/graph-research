@@ -48,7 +48,7 @@ def pairwise(ys):
         results.append(temp)
     return results
 
-def walk(tree, order_matters=False, restricted_nodes = []):
+def walk(tree):
     """Given a tree, generates all possible aggregations
     walk :: (Dict a) => a -> [a_]
     """
@@ -60,9 +60,8 @@ def walk(tree, order_matters=False, restricted_nodes = []):
         for perm in temp:
             perms.append(add_to_head_of_perm(parent, perm))
         for perm in perms:
-            if (len(perm) == 2 and perm[0] not in restricted_nodes and perm[1] not in restricted_nodes) or len(perm) != 2:
-                r = pairwise(perm)
-                results.append(r)
+            r = pairwise(perm)
+            results.append(r)
     return results
 
 def merge_nodes(node_ids, tree):
@@ -103,9 +102,9 @@ def dedupe(seq):
     return [ x for x in seq if not (x in seen or seen_add(x))]
     
 
-def possible_aggs(merge_list):
+def possible_aggs(merge_list, restricted_nodes = []):
     """Generates possible aggregations of a tree"""
-    results = []
+    results = set()
     for x in merge_list:
         for y in x:
             for k, z in enumerate(y):
@@ -113,13 +112,23 @@ def possible_aggs(merge_list):
                     temp = y
                     temp[k] = tuple([z[1], z[0]])
                     if temp not in y:
-                        results.append(z)
-    results_ = filter(lambda x: x[::-1] not in results, results)
-    return results_
+                        results.add(z)
+    results = filter(lambda x: x[0] not in restricted_nodes and x[1] not in restricted_nodes, results)
+    return list(results)
 
-def aggs(tree, order_matters=False):
+def aggs(tree, weights):
     """Given a list of possible aggregations, generates possible trees"""
-    ps = possible_aggs(walk(tree, order_matters))
+    restricted_nodes =[]
+    weights = apply_aggregation(tree, weights)
+    for parent, children in tree.iteritems():
+        children_weights = {}
+        for child in children:
+            children_weights[child] = weights[child]
+        try:
+            restricted_nodes.append(max(children_weights, key=children_weights.get))
+        except ValueError:
+            pass
+    ps = possible_aggs(walk(tree), restricted_nodes)
     results = []
     for p in ps:
         e = merge_nodes(p, tree)
@@ -127,38 +136,38 @@ def aggs(tree, order_matters=False):
             results.append(e)
     return results
     
-def agg_to(tree, desired_level, keep_intermediate=False, order_matters=False):
+def agg_to(tree, weights, desired_level, keep_intermediate=False):
     """agg_to :: Tree a -> Int -> [Tree a]
     """
     current_level = len(tree)
-    if desired_level >= current_level:
-        return [tree]
-    elif desired_level < 2:
+    if desired_level < 2:
         raise Exception("Resulting tree must have at least two nodes")
+    elif desired_level >= current_level:
+        return [tree]
     else:
         n = len(tree) - desired_level
         if keep_intermediate == True:
-            return reduce_n_times(tree, n, order_matters)
+            return reduce_n_times(tree, n, weights)
         else:
             return filter(lambda x: len(x) == desired_level, 
-                            reduce_n_times(tree, n, order_matters))
+                            reduce_n_times(tree, n, weights))
         
         
-def reduce_n_times(tree, n, order_matters=False, shortcut=False):
+def reduce_n_times(tree, n, weights):
     """Reduce a tree n times. E.g. if you have a 4 node tree and you reduce it
     once, you get back all the 3 node trees.  If you reduce it twice, you get
     back all the 2 node trees"""
     if n==1:
-        return aggs(tree, order_matters)
+        return aggs(tree, weights)
     if n>1:
         results = []
-        trees = reduce_n_times(tree, n-1)
+        trees = reduce_n_times(tree, n-1, weights)
         for tree in trees:
-            results = results + aggs(tree, order_matters)
+            results = results + aggs(tree, weights)
         return results
             
 def apply_aggregation(t, node_data, f=lambda x, y: x+y):
-    """Create the new tree weights by applying the """
+    """Create the new tree t by applying the aggregations to weights described in node_data"""
     try:
         result = dict()
         for k, v in t.iteritems():
@@ -203,8 +212,8 @@ def write_tree_ids(entropy_list, fname):
             w = {"tree index": k, "entropy": v}
             writer.writerow(w)
     
-def aggregate(tree, node_weights, desired_level, keep_intermediate=False, order_matters=False):
-    reduced_trees = agg_to(tree, desired_level, keep_intermediate)
+def aggregate(tree, node_weights, desired_level, keep_intermediate=False):
+    reduced_trees = agg_to(tree, desired_level, node_weights, keep_intermediate)
     agg_weights = [apply_aggregation(t, node_weights) for t in reduced_trees]
     H = [calculate_H(x) for x in agg_weights]
     S = [calculate_S(x) for x in agg_weights]
