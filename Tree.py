@@ -158,13 +158,25 @@ def reduce_n_times(tree, n, weights):
     once, you get back all the 3 node trees.  If you reduce it twice, you get
     back all the 2 node trees"""
     if n==1:
-        return aggs(tree, weights)
+        aggs_ = aggs(tree, weights)
+        agg_weights = [apply_aggregation(t, weights) for t in aggs_]
+        H = [calculate_H(x) for x in agg_weights]
+        sorted_H = [i[0] for i in sorted(enumerate(H), key=lambda x:x[1], reverse=True)][0:10]
+        k = []
+        for i in sorted_H:
+            k.append(aggs_[i])
+        return k
     if n>1:
         results = []
         trees = reduce_n_times(tree, n-1, weights)
-        for tree in trees:
+        agg_weights = [apply_aggregation(t, weights) for t in trees]
+        H = [calculate_S(x) for x in agg_weights]
+        sorted_S = [i[0] for i in sorted(enumerate(H), key=lambda x:x[1], reverse=True)][0:10]
+        k = []
+        for i in sorted_S:
+            k.append(trees[i])
+        for tree in k:
             results = results + aggs(tree, weights)
-        #print results
         return results
             
 def apply_aggregation(t, node_data, f=lambda x, y: x+y):
@@ -204,13 +216,13 @@ def calculate_P(n):
     ws =  n.itervalues()
     return -sum([(wi/W)*log(wi/W, 2) for wi in ws])
     
-def write_tree_ids(entropy_list, fname):
+def write_tree_ids(entropy_list, trees, fname):
     with open(fname, 'w') as csvfile:
-        fieldnames = ["tree index", "entropy"]
+        fieldnames = ["tree index", "length", "entropy"]
         writer = DictWriter(csvfile, fieldnames=fieldnames, lineterminator='\n')
         writer.writeheader()
         for k, v in enumerate(entropy_list):
-            w = {"tree index": k, "entropy": v}
+            w = {"tree index": k, "length": len(trees[k]), "entropy": v}
             writer.writerow(w)
     
 def aggregate(tree, node_weights, desired_level, keep_intermediate=False):
@@ -220,8 +232,8 @@ def aggregate(tree, node_weights, desired_level, keep_intermediate=False):
     S = [calculate_S(x) for x in agg_weights]
     sorted_H = [i[0] for i in sorted(enumerate(H), key=lambda x:x[1], reverse=True)]
     sorted_S = [i[0] for i in sorted(enumerate(S), key=lambda x:x[1], reverse=True)]
-    write_tree_ids(H, "absolute_entropies.csv")
-    write_tree_ids(S, "relative_entropies.csv")
+    write_tree_ids(H, reduced_trees, "absolute_entropies.csv")
+    write_tree_ids(S, reduced_trees, "relative_entropies.csv")
     H_max = max(H)
     S_max = max(S)
     H_original=calculate_H(node_weights)

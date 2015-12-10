@@ -35,4 +35,4 @@ artificial_tree_weights ={
 15:75
 }
 
-Tree.aggregate(artificial_tree, artificial_tree_weights, 6, keep_intermediate=True)
+Tree.aggregate(artificial_tree, artificial_tree_weights, 4, keep_intermediate=True)
