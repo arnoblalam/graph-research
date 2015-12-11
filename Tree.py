@@ -109,11 +109,13 @@ def possible_aggs(merge_list, restricted_nodes = []):
         for y in x:
             for k, z in enumerate(y):
                 if type(z) is tuple:
-                    temp = y
-                    temp[k] = tuple([z[1], z[0]])
-                    if temp not in y:
-                        results.add(z)
+                    results.add(z)
     results = filter(lambda x: x[0] not in restricted_nodes and x[1] not in restricted_nodes, results)
+    for result in results:
+        try:
+            results.remove(tuple(reversed(result)))
+        except ValueError:
+            continue
     return list(results)
 
 def aggs(tree, weights):
@@ -158,6 +160,8 @@ def reduce_n_times(tree, n, weights):
     once, you get back all the 3 node trees.  If you reduce it twice, you get
     back all the 2 node trees"""
     if n==1:
+        #print "Here"
+        #raw_input()
         aggs_ = aggs(tree, weights)
         agg_weights = [apply_aggregation(t, weights) for t in aggs_]
         H = [calculate_H(x) for x in agg_weights]
@@ -167,11 +171,13 @@ def reduce_n_times(tree, n, weights):
             k.append(aggs_[i])
         return k
     if n>1:
+        #print "There"
         results = []
         trees = reduce_n_times(tree, n-1, weights)
         agg_weights = [apply_aggregation(t, weights) for t in trees]
         H = [calculate_S(x) for x in agg_weights]
         sorted_S = [i[0] for i in sorted(enumerate(H), key=lambda x:x[1], reverse=True)][0:10]
+        print sorted_S
         k = []
         for i in sorted_S:
             k.append(trees[i])
