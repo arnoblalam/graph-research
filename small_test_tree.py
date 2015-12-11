@@ -16,7 +16,7 @@ node_weights = {
     4: 5
     }
 
-reduced_trees = Tree.agg_to(test_tree, 2)
+reduced_trees = Tree.agg_to(test_tree, node_weights, 2, order_matters = True)
 
 agg_weights = [Tree.apply_aggregation(t, node_weights) for t in reduced_trees]
 H = [Tree.calculate_H(x) for x in agg_weights]

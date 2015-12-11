@@ -26,7 +26,8 @@ node_weights = {
     9: 200
     }
     
-Tree.aggregate(test_tree, node_weights, 6)    
+Tree.aggregate(test_tree, node_weights, 6, keep_intermediate=True)
+aggregated_trees = Tree.agg_to(test_tree, node_weights, 6, keep_intermediate=True)
     
     
     
