@@ -151,14 +151,14 @@ def agg_to(tree, weights, desired_level, keep_intermediate=False):
         n = len(tree) - desired_level
         results = []
         for i in range(1, n+1):
-            r = reduce_n_times(tree, i, weights)
+            r = reduce_n_times(tree, i, weights, i == n)
             [results.append(s) for s in r]
         if keep_intermediate == True:
             return results
         else:
             return filter(lambda x: len(x) == desired_level, results)
         
-def reduce_n_times(tree, n, weights):
+def reduce_n_times(tree, n, weights, last_round=False):
     """Reduce a tree n times. E.g. if you have a 4 node tree and you reduce it
     once, you get back all the 3 node trees.  If you reduce it twice, you get
     back all the 2 node trees"""
@@ -181,9 +181,14 @@ def reduce_n_times(tree, n, weights):
         results = list(np.unique(np.array(results)))
         agg_weights = [apply_aggregation(t, weights) for t in results]
         S = [calculate_S(x) for x in agg_weights]
-        sorted_S = [i[0] for i in sorted(enumerate(S), key=lambda x:x[1], reverse=True)][0:10]
-        for i in sorted_S:
-            k.append(results[i])
+        if last_round == True:
+            sorted_S = [i[0] for i in sorted(enumerate(S), key=lambda x:x[1], reverse=True)]
+            for i in sorted_S:
+                k.append(results[i])
+        else:
+            sorted_S = [i[0] for i in sorted(enumerate(S), key=lambda x:x[1], reverse=True)][0:10]
+            for i in sorted_S:
+                k.append(results[i])
         return k
             
 def apply_aggregation(t, node_data, f=lambda x, y: x+y):
