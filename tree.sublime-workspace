@@ -31,26 +31,8 @@
 			"file": "Tree.py",
 			"settings":
 			{
-				"buffer_size": 3359,
+				"buffer_size": 9361,
 				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "test_tree.py",
-			"settings":
-			{
-				"buffer_size": 302,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "Enthought Canopy Python 2.7.9 | 64-bit | (default, Jul  1 2015, 03:41:50) [MSC v.1500 64 bit (AMD64)] on win32\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\n>>> import Tree\nTraceback (most recent call last):\n  File \"<stdin>\", line 1, in <module>\nImportError: No module named Tree\n>>> import os\n>>> os.path.dirname(os.path.realpath(__file__))\nTraceback (most recent call last):\n  File \"<stdin>\", line 1, in <module>\nNameError: name '__file__' is not defined\n>>> os.path.dirname(os.path.realpath(__file__))\nTraceback (most recent call last):\n  File \"<stdin>\", line 1, in <module>\nNameError: name '__file__' is not defined\n>>> os.getcwd()\n'C:\\\\Program Files (x86)\\\\Sublime Text 3'\n>>> ",
-			"settings":
-			{
-				"buffer_size": 707,
-				"line_ending": "Windows",
-				"name": "*REPL* [python]",
-				"scratch": true
 			}
 		}
 	],
@@ -81,7 +63,7 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 600.0,
+		"height": 219.0,
 		"last_filter": "python",
 		"selected_items":
 		[
@@ -126,7 +108,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 636.0
+		"width": 416.0
 	},
 	"console":
 	{
@@ -147,14 +129,12 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Arnob/graph-research"
+		"/C/Users/aalam/OneDrive/Documents/GitHub/graph-research"
 	],
 	"file_history":
 	[
-		"/C/Users/Arnob/Rconsole",
-		"/C/Users/Arnob/0",
-		"/C/Users/Arnob/AppData/Roaming/Sublime Text 3/Packages/User/SublimeREPL.sublime-settings",
 		"/C/Users/aalam/AppData/Roaming/Sublime Text 3/Packages/User/SublimeREPL.sublime-settings",
+		"/C/Users/aalam/OneDrive/Documents/GitHub/graph-research/test_tree.py",
 		"/C/Users/aalam/AppData/Roaming/Sublime Text 3/Packages/SublimeREPL/SublimeREPL.sublime-settings",
 		"/C/Users/aalam/OneDrive/Documents/GitHub/graph-research/tree.sublime-project",
 		"/C/Users/aalam/Documents/id_rsa.ppk",
@@ -167,7 +147,7 @@
 	],
 	"find":
 	{
-		"height": 37.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -181,7 +161,6 @@
 		"case_sensitive": false,
 		"find_history":
 		[
-			"isS",
 			"copy",
 			"tree",
 			"path"
@@ -211,15 +190,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3359,
+						"buffer_size": 9361,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								928,
-								928
+								5738,
+								5738
 							]
 						],
 						"settings":
@@ -230,115 +209,23 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1816.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "test_tree.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 302,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
-				{
-					"buffer": 2,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 707,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								707,
-								707
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"auto_indent": false,
-							"default_dir": "C:\\Users\\Arnob\\graph-research",
-							"detect_indentation": false,
-							"gutter": false,
-							"history_arrows": true,
-							"indent_subsequent_lines": false,
-							"line_numbers": false,
-							"repl": true,
-							"repl_external_id": "python",
-							"repl_id": "390891d8d0974601be1e17cd635e2779",
-							"repl_restart_args":
-							{
-								"cmd":
-								[
-									"python",
-									"-i",
-									"-u"
-								],
-								"cwd": "$file_path",
-								"encoding": "utf8",
-								"extend_env":
-								{
-									"PYTHONIOENCODING": "utf-8"
-								},
-								"external_id": "python",
-								"syntax": "Packages/Python/Python.tmLanguage",
-								"type": "subprocess"
-							},
-							"repl_sublime2": false,
-							"smart_indent": false,
-							"spell_check": false,
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 3477.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				}
 			]
+		},
+		{
+			"sheets":
+			[
+			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 37.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -364,7 +251,7 @@
 		"cols":
 		[
 			0.0,
-			0.5,
+			0.62063867534,
 			1.0
 		],
 		"rows":
@@ -386,7 +273,7 @@
 	"project": "tree.sublime-project",
 	"replace":
 	{
-		"height": 70.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":
