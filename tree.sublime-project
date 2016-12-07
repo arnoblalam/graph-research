@@ -1,12 +1,12 @@
 {
+	"SublimeLinter":
+	{
+		"@python": 2
+	},
 	"folders":
 	[
 		{
-			"path": "."
+			"path": "C:\\Users\\aalam\\OneDrive\\Documents\\GitHub\\new_graph"
 		}
-	],
-    "SublimeLinter":
-    {
-        "@python": 2
-    }
+	]
 }

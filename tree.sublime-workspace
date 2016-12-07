@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"ex",
+				"example_weights〔variable〕"
+			],
+			[
+				"exap",
+				"example_tree〔variable〕"
+			],
+			[
+				"exa",
+				"example_weights"
+			],
+			[
+				"read",
+				"read_tree_weights〔function〕"
+			],
+			[
 				"possi",
 				"possible_aggs〔function〕"
 			],
@@ -27,14 +43,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "Tree.py",
-			"settings":
-			{
-				"buffer_size": 9361,
-				"line_ending": "Windows"
-			}
-		}
 	],
 	"build_system": "Packages/Python/Python.sublime-build",
 	"build_system_choices":
@@ -63,8 +71,8 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 219.0,
-		"last_filter": "python",
+		"height": 392.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -129,10 +137,19 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/aalam/OneDrive/Documents/GitHub/graph-research"
+		"/C/Users/aalam/OneDrive/Documents/GitHub/new_graph"
 	],
 	"file_history":
 	[
+		"/C/Users/aalam/OneDrive/Documents/GitHub/new_graph/README.md",
+		"/C/Users/aalam/Documents/ (I)/Adobe Photoshop Lightroom 6.1.1/adobe.snr.patch-painter v.1.4/painter.nfo",
+		"/C/Users/aalam/Downloads/EQUITIES_RSS_FEED.rss",
+		"/C/Users/aalam/OneDrive/Documents/GitHub/new_graph/tree.py",
+		"/C/Users/aalam/OneDrive/Documents/GitHub/new_graph/example.py",
+		"/C/Users/aalam/OneDrive/Documents/GitHub/graph-research/example.py",
+		"/C/Users/aalam/OneDrive/Documents/GitHub/graph-research/Tree.py",
+		"/C/Users/aalam/Downloads/Brazzers.10th.Anniversary.2004-2014.Disc.1.XXX.DVDRip.x264-CiCXXX/cic-bra10thd1.nfo",
+		"/C/Users/aalam/Downloads/Brazzers.10th.Anniversary.2004-2014.Disc.2.XXX.DVDRip.x264-CiCXXX/cic-bra10thd2.nfo",
 		"/C/Users/aalam/AppData/Roaming/Sublime Text 3/Packages/User/SublimeREPL.sublime-settings",
 		"/C/Users/aalam/OneDrive/Documents/GitHub/graph-research/test_tree.py",
 		"/C/Users/aalam/AppData/Roaming/Sublime Text 3/Packages/SublimeREPL/SublimeREPL.sublime-settings",
@@ -147,7 +164,7 @@
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 27.0
 	},
 	"find_in_files":
 	{
@@ -181,40 +198,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "Tree.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9361,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5738,
-								5738
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3477.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		},
 		{
@@ -225,7 +210,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 27.0
 	},
 	"input":
 	{
@@ -251,7 +236,7 @@
 		"cols":
 		[
 			0.0,
-			0.62063867534,
+			0.581017149615,
 			1.0
 		],
 		"rows":
@@ -273,7 +258,7 @@
 	"project": "tree.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -303,7 +288,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 1,
+	"selected_group": 0,
 	"settings":
 	{
 	},
